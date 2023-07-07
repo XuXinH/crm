@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxh.mapper.StuCourseMapper">
+    <select id="getAllStuCourse" resultType="com.xxh.pojo.StuCourse">
+        SELECT
+               s.sid,sno,sname,ssex,GROUP_CONCAT(cname) as courses
+        FROM
+             student s
+                 LEFT JOIN
+             sc
+             on
+                 s.sid=sc.sid
+             LEFT JOIN
+                 course c
+             on
+                 sc.cid=c.cid
+        GROUP BY s.sid
+    </select>
+
+    <!--选课之前的查询（查询未选的课程）-->
+    <select id="selectBySid" resultType="com.xxh.pojo.StuCourse">
+        SELECT
+            *
+        FROM
+             course
+        WHERE
+              cid
+        not in(SELECT cid FROM sc WHERE sid=#{sid})
+    </select>
+</mapper>

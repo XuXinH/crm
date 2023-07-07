@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxh.mapper.StudentMapper">
+
+    <resultMap id="studentMap" type="com.xxh.pojo.Student">
+        <id property="sid" column="sid"/>
+        <result property="sno" column="sno"/>
+        <result property="sname" column="sname"/>
+        <result property="ssex" column="ssex"/>
+        <result property="sbirth" column="sbirth"/>
+        <collection property="courseList" ofType="com.xxh.pojo.Course">
+            <id property="cid" column="cid"/>
+            <result property="cno" column="cno"/>
+            <result property="cname" column="cname"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="studentMap">
+        SELECT s.sid,sno,sname,ssex,GROUP_CONCAT(cname) as cname,c.cid
+        FROM student
+                 s
+                 LEFT JOIN
+             sc
+             on
+                 s.sid=sc.sid
+            LEFT JOIN
+                course c
+             on
+                 sc.cid=c.cid
+        GROUP BY s.sid
+    </select>
+
+
+    <select id="getAll" resultType="com.xxh.pojo.Student">
+        select * from student;
+    </select>
+
+    <delete id="del">
+        delete from student where sno = #{sno}
+    </delete>
+
+    <update id="StudentUpdate">
+        update
+            student
+        set
+            sno = #{sno},sname = #{sname},ssex = #{ssex},sbirth = #{sbirth}
+        where
+            sid = #{sid}
+    </update>
+
+    <insert id="insert">
+        insert into student(sid,sno,sname,ssex,sbirth) values (#{sid},#{sno},#{sname},#{ssex},#{sbirth})
+    </insert>
+
+    <select id="getStudent" resultType="com.xxh.pojo.Student">
+        select * from student where sid= #{sid}
+    </select>
+
+    <delete id="delAll">
+        delete from student where sid in
+                                    <foreach collection="array" item="sid" open="(" close=")" separator=",">
+                                        ${sid}
+                                    </foreach>
+    </delete>
+
+
+    <resultMap id="studentEnterGradesMap" type="com.xxh.pojo.Student">
+        <id property="sid" column="sid"/>
+        <result property="sno" column="sno"/>
+        <result property="sname" column="sname"/>
+        <result property="ssex" column="ssex"/>
+        <result property="sbirth" column="sbirth"/>
+        <collection property="courseList" ofType="com.xxh.pojo.Course">
+            <id property="cid" column="cid"/>
+            <result property="cno" column="cno"/>
+            <result property="cname" column="cname"/>
+        </collection>
+    </resultMap>
+    <!--录入成绩之前查询-->
+    <select id="EnterGradesBefore" resultMap="studentEnterGradesMap">
+        SELECT
+             s.sid,sname,GROUP_CONCAT(cname) as cname,sc.degree
+        FROM
+             student s
+                 LEFT JOIN
+             sc
+             on
+                 s.sid=sc.sid
+                 LEFT JOIN
+                course c
+             on
+                 sc.cid=c.cid
+        WHERE
+              s.sid = #{sid}
+        GROUP BY
+             cname,s.sid
+
+    </select>
+
+    <!--多表，录入成绩-->
+    <select id="choiceCourseStu" resultType="com.xxh.pojo.Student">
+        SELECT * FROM student WHERE
+            sid in (SELECT sid FROM sc where cid=#{cid})
+    </select>
+</mapper>

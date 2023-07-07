@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxh.mapper.ScMapper">
+    <!--课程选课sql语句-->
+    <insert id="insertCourse">
+        insert into sc(sid,cid) values(#{sid},#{cid})
+    </insert>
+
+    <delete id="delCourse">
+        delete from sc where cid =#{cid} and sid=#{sid}
+    </delete>
+
+    <select id="choiceCourseStu" resultType="com.xxh.pojo.Sc">
+        select * from sc where cid = #{cid};
+    </select>
+
+    <update id="update">
+        update sc set degree=#{degree} where cid=#{cid} and sid=#{sid}
+    </update>
+
+    <select id="getGrade" resultType="com.xxh.pojo.Sc">
+        select * from sc where cid = #{cid} and sid = #{sid};
+    </select>
+</mapper>

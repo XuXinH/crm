@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxh.mapper.AdminMapper">
+    <select id="login" resultType="com.xxh.pojo.Admin">
+        select * from admin where uname = #{uname} and upassword = #{upassword}
+    </select>
+
+    <insert id="register" parameterType="com.xxh.pojo.Admin">
+        insert into admin(uname,upassword) values(#{uname},#{upassword})
+    </insert>
+
+    <select id="getByName" resultType="com.xxh.pojo.Admin">
+        select * from admin where uname = #{uname}
+    </select>
+</mapper>
